@@ -52,10 +52,8 @@ describe("POST /companies", function () {
 
   test("unauth for non admin", async function () {
     const resp = await request(app)
-      .patch(`/companies/c1`)
-      .send({
-        name: "C1-new",
-      })
+      .post(`/companies`)
+      .send(newCompany)
       .set("authorization", `Bearer ${u1Token}`);
     expect(resp.statusCode).toEqual(401);
   });
