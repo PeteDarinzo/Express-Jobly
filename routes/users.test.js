@@ -151,6 +151,26 @@ describe("POST /:username/jobs/:id", function () {
     );
   });
 
+  test("bad request for duplicate application as admin", async function () {
+    await request(app)
+      .post(`/users/u1/jobs/${jobIds[0]}`)
+      .set("authorization", `Bearer ${a1Token}`);
+    const resp = await request(app)
+      .post(`/users/u1/jobs/${jobIds[0]}`)
+      .set("authorization", `Bearer ${a1Token}`);
+    expect(resp.statusCode).toEqual(400);
+  });
+
+  test("bad request for duplicate application as user", async function () {
+    await request(app)
+      .post(`/users/u1/jobs/${jobIds[0]}`)
+      .set("authorization", `Bearer ${a1Token}`);
+    const resp = await request(app)
+      .post(`/users/u1/jobs/${jobIds[0]}`)
+      .set("authorization", `Bearer ${a1Token}`);
+    expect(resp.statusCode).toEqual(400);
+  });
+
   test("unauth for other users", async function () {
     const resp = await request(app)
       .post(`/users/u1/jobs/${jobIds[0]}`)

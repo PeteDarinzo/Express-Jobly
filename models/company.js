@@ -45,6 +45,9 @@ class Company {
   }
 
   /** Find all companies.
+   * 
+   * Accepts an object of filters (minEmployees, maxEmployees, name)
+   * filter object can contain all, any, or none of the filters
    *
    * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
    * */

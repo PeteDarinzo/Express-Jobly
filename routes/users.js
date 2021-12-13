@@ -11,7 +11,6 @@ const User = require("../models/user");
 const { createToken } = require("../helpers/tokens");
 const userNewSchema = require("../schemas/userNew.json");
 const userUpdateSchema = require("../schemas/userUpdate.json");
-const { user } = require("pg/lib/defaults");
 
 const router = express.Router();
 
@@ -38,16 +37,16 @@ router.post("/", ensureAdmin, async function (req, res, next) {
 
     const user = await User.register(req.body);
     const token = createToken(user);
-    return res.status(201).json({ user, token });
+    res.status(201).json({ user, token });
   } catch (err) {
-    return next(err);
+    next(err);
   }
 });
 
 router.post("/:username/jobs/:id", ensureAdminOrUser, async function (req, res, next) {
   try {
     const { username, id } = req.params;
-    const jobId = await User.apply(username, id);
+    const jobId = await User.applyToJob(username, id);
     res.json({ applied: jobId.jobId })
   } catch (err) {
     next(err);
@@ -65,9 +64,9 @@ router.post("/:username/jobs/:id", ensureAdminOrUser, async function (req, res, 
 router.get("/", ensureAdmin, async function (req, res, next) {
   try {
     const users = await User.findAll();
-    return res.json({ users });
+    res.json({ users });
   } catch (err) {
-    return next(err);
+    next(err);
   }
 });
 
@@ -82,9 +81,9 @@ router.get("/", ensureAdmin, async function (req, res, next) {
 router.get("/:username", ensureAdminOrUser, async function (req, res, next) {
   try {
     const user = await User.get(req.params.username);
-    return res.json({ user });
+    res.json({ user });
   } catch (err) {
-    return next(err);
+    next(err);
   }
 });
 
@@ -108,9 +107,9 @@ router.patch("/:username", ensureAdminOrUser, async function (req, res, next) {
     }
 
     const user = await User.update(req.params.username, req.body);
-    return res.json({ user });
+    res.json({ user });
   } catch (err) {
-    return next(err);
+    next(err);
   }
 });
 
@@ -123,9 +122,9 @@ router.patch("/:username", ensureAdminOrUser, async function (req, res, next) {
 router.delete("/:username", ensureAdminOrUser, async function (req, res, next) {
   try {
     await User.remove(req.params.username);
-    return res.json({ deleted: req.params.username });
+    res.json({ deleted: req.params.username });
   } catch (err) {
-    return next(err);
+    next(err);
   }
 });
 

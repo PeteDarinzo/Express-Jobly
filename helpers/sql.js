@@ -1,16 +1,19 @@
 const { BadRequestError } = require("../expressError");
 
 
-/** Turn and object of user data to update into a SQL query
+/** Turn an object of user data to be updated into a SQL query
  * e.g. {firstName: 'Aliya', age: 32} => ['"first_name"=$1', '"age"=$2']
  * 
  * Object keys are names of columns to be updated
- * jsToSql parameter is a "dictionary" that relates user paraments to column names (first name, last name, and admin)
+ * jsToSql parameter is a "dictionary" that relates user parameters to column names (first name, last name, and admin)
  *  
- * Construct query by taking all keys (column names) and setting them equal to their index plus one, to account for zero indexing
+ * Construct query by taking all keys (column names) and setting them equal to their index, plus one, to account for zero indexing
  * 
- * Each column is then joined into a string
- * The values are stored in their own array
+ * Each column is then joined into a string to make the query
+ * The updated values are stored in their own array
+ * 
+ * Together they are used to make the complete query
+ * 
  */
 function sqlForPartialUpdate(dataToUpdate, jsToSql) {
   const keys = Object.keys(dataToUpdate);
@@ -30,15 +33,16 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
 }
 
 
-// Turn an object containing up to three filters (minEmployees, maxEmployees, name) into an SQL WHERE statement
+/** Turn an object containing up to three filters (minEmployees, maxEmployees, name) into an SQL WHERE statement
+ * 
+ * Each combination of filters is checked, so that the query can consist of any and all filters
+ */
 function sqlForCompanyFilters(filters) {
   let outputStatement = "";
   let minEmployees;
   let maxEmployees;
   if (filters.minEmployees) { minEmployees = filters.minEmployees };
-  // const minEmployees = filters.minEmployees;
   if (filters.maxEmployees) { maxEmployees = filters.maxEmployees };
-  // const maxEmployees = filters.maxEmployees;
   let name = filters.name || "";
   name = name.toLowerCase();
 
@@ -74,8 +78,11 @@ function sqlForCompanyFilters(filters) {
 }
 
 
+/** Turn an object containing up to three filters (title, minSalary, hasEquity) into an SQL WHERE statement
+ * 
+ * Each combination of filters is checked, so that the query can consist of any and all filters
+ */
 
-// Turn an object containing up to three filters (title, minSalary, hasEquity) into an SQL WHERE statement
 function sqlForJobFilters(filters) {
   let outputStatement = "";
   let minSalary;

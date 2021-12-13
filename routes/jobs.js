@@ -38,7 +38,7 @@ router.post("/", ensureAdmin, async function (req, res, next) {
     const job = await Job.create(req.body);
     res.status(201).json({ job });
   } catch (err) {
-    return next(err);
+    next(err);
   }
 });
 
@@ -53,7 +53,7 @@ router.get("/", async function (req, res, next) {
     const jobs = await Job.findAll(req.query);
     res.json({ jobs })
   } catch (err) {
-    return next(err);
+    next(err);
   }
 });
 
@@ -68,14 +68,11 @@ router.get("/", async function (req, res, next) {
 router.get("/:title", async function (req, res, next) {
   try {
     const job = await Job.get(req.params.title);
-    return res.json({ job });
+    res.json({ job });
   } catch (err) {
-    return next(err);
+    next(err);
   }
 });
-
-
-
 
 /** PATCH /[title] { fld1, fld2, ... } => { job }
  *
@@ -97,9 +94,9 @@ router.patch("/:title", ensureAdmin, async function (req, res, next) {
     }
 
     const job = await Job.update(req.params.title, req.body);
-    return res.json({ job });
+    res.json({ job });
   } catch (err) {
-    return next(err);
+    next(err);
   }
 });
 
@@ -111,9 +108,9 @@ router.patch("/:title", ensureAdmin, async function (req, res, next) {
 router.delete("/:title", ensureAdmin, async function (req, res, next) {
   try {
     await Job.remove(req.params.title);
-    return res.json({ deleted: req.params.title });
+    res.json({ deleted: req.params.title });
   } catch (err) {
-    return next(err);
+    next(err);
   }
 });
 

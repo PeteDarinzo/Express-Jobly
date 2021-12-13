@@ -10,6 +10,7 @@ const {
 } = require("../expressError");
 
 const { BCRYPT_WORK_FACTOR } = require("../config.js");
+const { user } = require("pg/lib/defaults");
 
 /** Related functions for users. */
 
@@ -99,9 +100,21 @@ class User {
   /** Apply to a job.
    * 
    * Returns { jobId }
+   * 
+   * Throws BadRequestError on duplicates.
+   * 
    */
 
-  static async apply(username, id) {
+  static async applyToJob(username, id) {
+
+    const duplicateCheck = await db.query(
+      `SELECT username
+      FROM applications
+      WHERE username = $1 AND job_id = $2`,
+      [username, id]);
+
+    if (duplicateCheck.rows[0]) throw new BadRequestError(`Duplicate application`);
+
     const result = await db.query(
       `INSERT INTO applications
       (username,
@@ -110,7 +123,6 @@ class User {
       RETURNING job_id AS "jobId"`,
       [username, id]
     );
-    // const { jobId } = result.rows[0];
     return result.rows[0];
   }
 
@@ -166,7 +178,7 @@ class User {
       jobs = [];
     }
 
-    
+
 
     return { username, firstName, lastName, email, isAdmin, jobs }
   };

@@ -108,9 +108,9 @@ async function commonBeforeAll() {
     isAdmin: true
   });
 
-  await User.apply("u2", jobIds[0]);
+  await User.applyToJob("u2", jobIds[0]);
 
-  await User.apply("u2", jobIds[1]);
+  await User.applyToJob("u2", jobIds[1]);
 
 }
 
@@ -130,6 +130,7 @@ async function commonAfterAll() {
 const u1Token = createToken({ username: "u1", isAdmin: false });
 const u2Token = createToken({ username: "u2", isAdmin: false });
 const a1Token = createToken({ username: "a1", isAdmin: true });
+
 module.exports = {
   commonBeforeAll,
   commonBeforeEach,

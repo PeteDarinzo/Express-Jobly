@@ -111,13 +111,20 @@ describe("register", function () {
 
 describe("apply", function () {
   test("works", async function () {
-    const idResults = await db.query(
-      `SELECT id FROM jobs
-        WHERE title = 'J1'`);
-    const { id } = idResults.rows[0];
-    const application = await User.apply("u1", id);
-
+    const id = jobIds[0];
+    const application = await User.applyToJob("u1", id);
     expect(application.jobId).toEqual(id);
+  });
+
+  test("can't apply twice", async function () {
+    try {
+      const id = jobIds[0];
+      await User.applyToJob("u1", id);
+      await User.applyToJob("u1", id);
+      fail();
+    } catch (err) {
+      expect(err instanceof BadRequestError).toBeTruthy();
+    }
   });
 });
 

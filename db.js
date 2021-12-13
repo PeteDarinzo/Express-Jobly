@@ -5,6 +5,7 @@ const { getDatabaseUri } = require("./config");
 
 let db;
 
+/** Springboard Method */
 // if (process.env.NODE_ENV === "production") {
 //   db = new Client({
 //     connectionString: getDatabaseUri(),
@@ -17,7 +18,10 @@ let db;
 //     connectionString: getDatabaseUri()
 //   });
 // }
+/** END Springboard Method */
 
+
+/** My Method */
 if (process.env.NODE_ENV === "production") {
   db = new Client({
     host: "localhost",
@@ -36,18 +40,8 @@ if (process.env.NODE_ENV === "production") {
     database: getDatabaseUri()
   });
 }
+/** END My Method */
 
-// let DB_URI = getDatabaseUri();
-
-// if (process.env.NODE_ENV === "production") {
-//   DB_URI.ssl = {
-//     rejectUnauthorized: false
-//   }
-// }
-// // db = new Client(DB_URI);
-// // } else {
-// db = new Client(DB_URI);
-// // }
 
 db.connect();
 
