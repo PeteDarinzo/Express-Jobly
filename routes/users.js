@@ -11,6 +11,7 @@ const User = require("../models/user");
 const { createToken } = require("../helpers/tokens");
 const userNewSchema = require("../schemas/userNew.json");
 const userUpdateSchema = require("../schemas/userUpdate.json");
+const { user } = require("pg/lib/defaults");
 
 const router = express.Router();
 
@@ -40,6 +41,16 @@ router.post("/", ensureAdmin, async function (req, res, next) {
     return res.status(201).json({ user, token });
   } catch (err) {
     return next(err);
+  }
+});
+
+router.post("/:username/jobs/:id", ensureAdminOrUser, async function (req, res, next) {
+  try {
+    const { username, id } = req.params;
+    const jobId = await User.apply(username, id);
+    res.json({ applied: jobId.jobId })
+  } catch (err) {
+    next(err);
   }
 });
 

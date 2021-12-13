@@ -96,6 +96,24 @@ class User {
     return user;
   }
 
+  /** Apply to a job.
+   * 
+   * Returns { jobId }
+   */
+
+  static async apply(username, id) {
+    const result = await db.query(
+      `INSERT INTO applications
+      (username,
+      job_id)
+      VALUES ($1, $2)
+      RETURNING job_id AS "jobId"`,
+      [username, id]
+    );
+    // const { jobId } = result.rows[0];
+    return result.rows[0];
+  }
+
   /** Find all users.
    *
    * Returns [{ username, first_name, last_name, email, is_admin }, ...]
@@ -125,22 +143,33 @@ class User {
 
   static async get(username) {
     const userRes = await db.query(
-      `SELECT username,
-                  first_name AS "firstName",
-                  last_name AS "lastName",
-                  email,
-                  is_admin AS "isAdmin"
-           FROM users
-           WHERE username = $1`,
+      `SELECT u.username,
+          u.first_name AS "firstName",
+          u.last_name AS "lastName",
+          u.email,
+          u.is_admin AS "isAdmin",
+          a.job_id AS "jobId"
+          FROM users AS u LEFT JOIN applications AS a
+          ON u.username = a.username
+          WHERE u.username = $1`,
       [username],
     );
 
-    const user = userRes.rows[0];
+    if (userRes.rows.length === 0) throw new NotFoundError(`No user: ${username}`);
 
-    if (!user) throw new NotFoundError(`No user: ${username}`);
+    const { firstName, lastName, email, isAdmin } = userRes.rows[0];
 
-    return user;
-  }
+    let jobs = userRes.rows.map(r => r.jobId);
+
+    // convert a null array to an empty one
+    if (jobs[0] === null) {
+      jobs = [];
+    }
+
+    
+
+    return { username, firstName, lastName, email, isAdmin, jobs }
+  };
 
   /** Update user data with `data`.
    *

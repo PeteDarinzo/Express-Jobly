@@ -12,7 +12,9 @@ const {
   commonBeforeEach,
   commonAfterEach,
   commonAfterAll,
+  jobIds
 } = require("./_testCommon");
+const app = require("../app");
 
 beforeAll(commonBeforeAll);
 beforeEach(commonBeforeEach);
@@ -105,6 +107,20 @@ describe("register", function () {
   });
 });
 
+/************************************** apply */
+
+describe("apply", function () {
+  test("works", async function () {
+    const idResults = await db.query(
+      `SELECT id FROM jobs
+        WHERE title = 'J1'`);
+    const { id } = idResults.rows[0];
+    const application = await User.apply("u1", id);
+
+    expect(application.jobId).toEqual(id);
+  });
+});
+
 /************************************** findAll */
 
 describe("findAll", function () {
@@ -132,7 +148,7 @@ describe("findAll", function () {
 /************************************** get */
 
 describe("get", function () {
-  test("works", async function () {
+  test("works with no job applications", async function () {
     let user = await User.get("u1");
     expect(user).toEqual({
       username: "u1",
@@ -140,6 +156,19 @@ describe("get", function () {
       lastName: "U1L",
       email: "u1@email.com",
       isAdmin: false,
+      jobs: []
+    });
+  });
+
+  test("works with job applications", async function () {
+    let user = await User.get("u2");
+    expect(user).toEqual({
+      username: "u2",
+      firstName: "U2F",
+      lastName: "U2L",
+      email: "u2@email.com",
+      isAdmin: false,
+      jobs: [jobIds[0], jobIds[1]]
     });
   });
 
@@ -215,7 +244,7 @@ describe("remove", function () {
   test("works", async function () {
     await User.remove("u1");
     const res = await db.query(
-        "SELECT * FROM users WHERE username='u1'");
+      "SELECT * FROM users WHERE username='u1'");
     expect(res.rows.length).toEqual(0);
   });
 

@@ -36,7 +36,13 @@ describe("POST /jobs", function () {
       .set("authorization", `Bearer ${a1Token}`);
     expect(resp.statusCode).toEqual(201);
     expect(resp.body).toEqual({
-      job: newJob,
+      job: {
+        id: expect.any(Number),
+        title: "new",
+        salary: 50000,
+        equity: "0",
+        companyHandle: "c1"
+      },
     });
   });
 
