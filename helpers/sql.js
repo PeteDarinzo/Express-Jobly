@@ -31,7 +31,7 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
 
 
 // Turn an object containing up to three filters (minEmployees, maxEmployees, name) into an SQL WHERE statement
-function sqlForFilters(filters) {
+function sqlForCompanyFilters(filters) {
   let outputStatement = "";
   let minEmployees;
   let maxEmployees;
@@ -73,4 +73,47 @@ function sqlForFilters(filters) {
   return outputStatement;
 }
 
-module.exports = { sqlForPartialUpdate, sqlForFilters };
+
+
+// Turn an object containing up to three filters (title, minSalary, hasEquity) into an SQL WHERE statement
+function sqlForJobFilters(filters) {
+  let outputStatement = "";
+  let minSalary;
+  let hasEquity = false;
+  if (filters.minSalary) { minSalary = filters.minSalary };
+  if (filters.hasEquity) { hasEquity = true };
+  let title = filters.title || "";
+  title = title.toLowerCase();
+
+  if (minSalary) {
+    outputStatement = `WHERE salary >= ${minSalary}`;
+  }
+
+  if (hasEquity) {
+    outputStatement = 'WHERE equity > 0';
+  }
+
+  if (minSalary && hasEquity) {
+    outputStatement = `WHERE salary >= ${minSalary} AND equity > 0`;
+  }
+
+  if (title) {
+    outputStatement = `WHERE LOWER(title) LIKE '%${title}%'`;
+  }
+
+  if (minSalary && title) {
+    outputStatement = `WHERE LOWER(title) LIKE '%${title}%' AND salary >= ${minSalary}`;
+  }
+
+  if (hasEquity && title) {
+    outputStatement = `WHERE LOWER(title) LIKE '%${title}%' AND equity > 0`;
+  }
+
+  if (minSalary && hasEquity && title) {
+    outputStatement = `WHERE LOWER(title) LIKE '%${title}%' AND salary >= ${minSalary} AND equity > 0`;
+  }
+
+  return outputStatement;
+}
+
+module.exports = { sqlForPartialUpdate, sqlForCompanyFilters, sqlForJobFilters };

@@ -109,6 +109,12 @@ describe("GET /jobs", function () {
             salary: 70000,
             equity: "0",
             companyHandle: "c3"
+          },
+          {
+            title: "J4",
+            salary: 80000,
+            equity: "0.5",
+            companyHandle: "c1"
           }
         ]
     });
@@ -123,6 +129,129 @@ describe("GET /jobs", function () {
       .get("/jobs")
       .set("authorization", `Bearer ${u1Token}`);
     expect(resp.statusCode).toEqual(500);
+  });
+
+
+  test("works: filter: minSalary", async function () {
+    let filter = { minSalary: "60000" };
+    const resp = await request(app)
+      .get("/jobs")
+      .query(filter);
+
+    expect(resp.statusCode).toEqual(200);
+    expect(resp.body).toEqual({
+      jobs: [
+        {
+          title: "J2",
+          salary: 60000,
+          equity: "0",
+          companyHandle: "c2"
+        },
+        {
+          title: "J3",
+          salary: 70000,
+          equity: "0",
+          companyHandle: "c3"
+        },
+        {
+          title: "J4",
+          salary: 80000,
+          equity: "0.5",
+          companyHandle: "c1"
+        }
+      ]
+    });
+  });
+
+  test("works: filter: hasEquity", async function () {
+    let filter = { hasEquity: true };
+    const resp = await request(app)
+      .get("/jobs")
+      .query(filter);
+    expect(resp.statusCode).toBe(200);
+    expect(resp.body).toEqual({
+      jobs: [
+        {
+          title: "J4",
+          salary: 80000,
+          equity: "0.5",
+          companyHandle: "c1"
+        }
+      ]
+    });
+  });
+
+  test("works: filters: minSalary, hasEquity", async function () {
+    let filters = { minSalary: 60000, hasEquity: true };
+    const resp = await request(app)
+      .get("/jobs")
+      .query(filters);
+
+    expect(resp.statusCode).toBe(200);
+    expect(resp.body).toEqual({
+      jobs: [
+        {
+          title: "J4",
+          salary: 80000,
+          equity: "0.5",
+          companyHandle: "c1"
+        }
+      ]
+    });
+  });
+
+  test("works: filters: minSalary, title", async function () {
+    let filters = { minSalary: 60000, title: "3" };
+    const resp = await request(app)
+      .get("/jobs")
+      .query(filters);
+    expect(resp.statusCode).toBe(200);
+    expect(resp.body).toEqual({
+      jobs: [
+        {
+          title: "J3",
+          salary: 70000,
+          equity: "0",
+          companyHandle: "c3"
+        }
+      ]
+    });
+  });
+
+  test("works: filter: hasEquity, title", async function () {
+    let filters = { hasEquity: true, title: "4" };
+    const resp = await request(app)
+      .get("/jobs")
+      .query(filters);
+    expect(resp.statusCode).toBe(200);
+    expect(resp.body).toEqual({
+      jobs: [
+        {
+          title: "J4",
+          salary: 80000,
+          equity: "0.5",
+          companyHandle: "c1"
+        }
+      ]
+    });
+  });
+
+  test("works: filter: minSalary, hasEquity, title", async function () {
+    let filters = { minSalary: "50000", hasEquity: true, title: "4" };
+    const resp = await request(app)
+      .get("/jobs")
+      .query(filters);
+    expect(resp.statusCode).toBe(200);
+    expect(resp.body).toEqual({
+      jobs: [
+        {
+          title: "J4",
+          salary: 80000,
+          equity: "0.5",
+          companyHandle: "c1"
+        }
+      ]
+    });
   });
 
 });
