@@ -5,10 +5,9 @@ const { UnauthorizedError } = require("../expressError");
 
 const {
   authenticateJWT,
-  ensureLoggedIn,
   ensureAdmin,
-  ensureAdminOrUser,
-} = require("./auth");
+  ensureAdminOrUser
+} = require("../middleware/auth");
 
 
 const { SECRET_KEY } = require("../config");
@@ -17,7 +16,7 @@ const badJwt = jwt.sign({ username: "test", isAdmin: false }, "wrong");
 
 test("add", function () {
   expect(2 + 2).toEqual(4);
-})
+});
 
 describe("authenticateJWT", function () {
 
@@ -64,28 +63,28 @@ describe("authenticateJWT", function () {
 });
 
 
-describe("ensureLoggedIn", function () {
+// describe("ensureLoggedIn", function () {
 
-  test("works", function () {
-    expect.assertions(1);
-    const req = {};
-    const res = { locals: { user: { username: "test", isAdmin: false } } };
-    const next = function (err) {
-      expect(err).toBeFalsy();
-    };
-    ensureLoggedIn(req, res, next);
-  });
+//   test("works", function () {
+//     expect.assertions(1);
+//     const req = {};
+//     const res = { locals: { user: { username: "test", isAdmin: false } } };
+//     const next = function (err) {
+//       expect(err).toBeFalsy();
+//     };
+//     ensureLoggedIn(req, res, next);
+//   });
 
-  test("unauth if no login", function () {
-    expect.assertions(1);
-    const req = {};
-    const res = { locals: {} };
-    const next = function (err) {
-      expect(err instanceof UnauthorizedError).toBeTruthy();
-    };
-    ensureLoggedIn(req, res, next);
-  });
-});
+//   test("unauth if no login", function () {
+//     expect.assertions(1);
+//     const req = {};
+//     const res = { locals: {} };
+//     const next = function (err) {
+//       expect(err instanceof UnauthorizedError).toBeTruthy();
+//     };
+//     ensureLoggedIn(req, res, next);
+//   });
+// });
 
 
 describe("ensureAdmin", function () {

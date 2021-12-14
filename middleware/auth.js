@@ -59,6 +59,10 @@ function ensureAdmin(req, res, next) {
   }
 }
 
+/** Middleware to use when they must be logged in, and either an admin, or the requesting user.
+ * 
+ * If not, raises Unauthorized.
+ */
 function ensureAdminOrUser(req, res, next) {
   try {
     if (!res.locals.user || ((req.params.username !== res.locals.user.username) && !res.locals.user.isAdmin)) {

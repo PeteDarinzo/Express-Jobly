@@ -11,6 +11,7 @@ const User = require("../models/user");
 const { createToken } = require("../helpers/tokens");
 const userNewSchema = require("../schemas/userNew.json");
 const userUpdateSchema = require("../schemas/userUpdate.json");
+const generator = require("generate-password");
 
 const router = express.Router();
 
@@ -20,6 +21,8 @@ const router = express.Router();
  * Adds a new user. This is not the registration endpoint --- instead, this is
  * only for admin users to add new users. The new user being added can be an
  * admin.
+ * 
+ * A randomly generated password is assigned to the new user.
  *
  * This returns the newly created user and an authentication token for them:
  *  {user: { username, firstName, lastName, email, isAdmin }, token }
@@ -34,8 +37,13 @@ router.post("/", ensureAdmin, async function (req, res, next) {
       const errs = validator.errors.map(e => e.stack);
       throw new BadRequestError(errs);
     }
-
-    const user = await User.register(req.body);
+    const { username, firstName, lastName, email, isAdmin } = req.body;
+    const password = generator.generate({
+      length: 10,
+      numbers: true
+    });
+    console.log("PASSWORD: ", password);
+    const user = await User.register({ username, firstName, lastName, password, email, isAdmin });
     const token = createToken(user);
     res.status(201).json({ user, token });
   } catch (err) {
