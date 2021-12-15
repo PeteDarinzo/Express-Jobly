@@ -110,17 +110,35 @@ describe("register", function () {
 /************************************** apply */
 
 describe("apply", function () {
-  test("works", async function () {
+  test("works enum: applied", async function () {
     const id = jobIds[0];
-    const application = await User.applyToJob("u1", id);
+    const application = await User.applyToJob("u1", id, "applied");
+    expect(application.jobId).toEqual(id);
+  });
+
+  test("works enum: interested", async function () {
+    const id = jobIds[0];
+    const application = await User.applyToJob("u1", id, "interested");
+    expect(application.jobId).toEqual(id);
+  });
+
+  test("works enum: rejected", async function () {
+    const id = jobIds[0];
+    const application = await User.applyToJob("u1", id, "rejected");
+    expect(application.jobId).toEqual(id);
+  });
+
+  test("works enum: accepted", async function () {
+    const id = jobIds[0];
+    const application = await User.applyToJob("u1", id, "accepted");
     expect(application.jobId).toEqual(id);
   });
 
   test("can't apply twice", async function () {
     try {
       const id = jobIds[0];
-      await User.applyToJob("u1", id);
-      await User.applyToJob("u1", id);
+      await User.applyToJob("u1", id, "applied");
+      await User.applyToJob("u1", id, "applied");
       fail();
     } catch (err) {
       expect(err instanceof BadRequestError).toBeTruthy();

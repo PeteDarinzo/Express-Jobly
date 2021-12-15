@@ -134,6 +134,7 @@ describe("POST /:username/jobs/:id", function () {
   test("works for admins", async function () {
     const resp = await request(app)
       .post(`/users/u1/jobs/${jobIds[0]}`)
+      .query({ state: "interested" })
       .set("authorization", `Bearer ${a1Token}`);
     expect(resp.body).toEqual(
       { applied: jobIds[0] }
@@ -143,18 +144,29 @@ describe("POST /:username/jobs/:id", function () {
   test("works for users", async function () {
     const resp = await request(app)
       .post(`/users/u1/jobs/${jobIds[0]}`)
+      .query({ state: "applied" })
       .set("authorization", `Bearer ${u1Token}`);
     expect(resp.body).toEqual(
       { applied: jobIds[0] }
     );
   });
 
+  test("bad request for bad-enum", async function () {
+    const resp = await request(app)
+      .post(`/users/u1/jobs/${jobIds[0]}`)
+      .query({ state: "bad-enum" })
+      .set("authorization", `Bearer ${a1Token}`);
+    expect(resp.statusCode).toEqual(400);
+  });
+
   test("bad request for duplicate application as admin", async function () {
     await request(app)
       .post(`/users/u1/jobs/${jobIds[0]}`)
+      .query({ state: "applied" })
       .set("authorization", `Bearer ${a1Token}`);
     const resp = await request(app)
       .post(`/users/u1/jobs/${jobIds[0]}`)
+      .query({ state: "applied" })
       .set("authorization", `Bearer ${a1Token}`);
     expect(resp.statusCode).toEqual(400);
   });
@@ -162,9 +174,11 @@ describe("POST /:username/jobs/:id", function () {
   test("bad request for duplicate application as user", async function () {
     await request(app)
       .post(`/users/u1/jobs/${jobIds[0]}`)
+      .query({ state: "applied" })
       .set("authorization", `Bearer ${a1Token}`);
     const resp = await request(app)
       .post(`/users/u1/jobs/${jobIds[0]}`)
+      .query({ state: "applied" })
       .set("authorization", `Bearer ${a1Token}`);
     expect(resp.statusCode).toEqual(400);
   });
@@ -172,13 +186,15 @@ describe("POST /:username/jobs/:id", function () {
   test("unauth for other users", async function () {
     const resp = await request(app)
       .post(`/users/u1/jobs/${jobIds[0]}`)
+      .query({ state: "applied" })
       .set("authorization", `Bearer ${u2Token}`);
     expect(resp.statusCode).toEqual(401);
   });
 
   test("unauth for other anon", async function () {
     const resp = await request(app)
-      .post(`/users/u1/jobs/${jobIds[0]}`);
+      .post(`/users/u1/jobs/${jobIds[0]}`)
+      .query({ state: "applied" });
     expect(resp.statusCode).toEqual(401);
   });
 

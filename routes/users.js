@@ -42,7 +42,6 @@ router.post("/", ensureAdmin, async function (req, res, next) {
       length: 10,
       numbers: true
     });
-    console.log("PASSWORD: ", password);
     const user = await User.register({ username, firstName, lastName, password, email, isAdmin });
     const token = createToken(user);
     res.status(201).json({ user, token });
@@ -53,8 +52,13 @@ router.post("/", ensureAdmin, async function (req, res, next) {
 
 router.post("/:username/jobs/:id", ensureAdminOrUser, async function (req, res, next) {
   try {
+    const applicationStates = ["interested", "applied", "rejected", "accepted"];
+    const { state } = req.query;
+    if (!((applicationStates.indexOf(state)) >= 0)) {
+      throw new BadRequestError(`Application state not allowed: ${state}`);
+    }
     const { username, id } = req.params;
-    const jobId = await User.applyToJob(username, id);
+    const jobId = await User.applyToJob(username, id, state);
     res.json({ applied: jobId.jobId })
   } catch (err) {
     next(err);

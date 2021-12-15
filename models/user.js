@@ -105,7 +105,7 @@ class User {
    * 
    */
 
-  static async applyToJob(username, id) {
+  static async applyToJob(username, id, state) {
 
     const duplicateCheck = await db.query(
       `SELECT username
@@ -118,10 +118,11 @@ class User {
     const result = await db.query(
       `INSERT INTO applications
       (username,
-      job_id)
-      VALUES ($1, $2)
+      job_id,
+      current_state)
+      VALUES ($1, $2, $3)
       RETURNING job_id AS "jobId"`,
-      [username, id]
+      [username, id, state]
     );
     return result.rows[0];
   }
