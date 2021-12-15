@@ -10,7 +10,6 @@ const {
 } = require("../expressError");
 
 const { BCRYPT_WORK_FACTOR } = require("../config.js");
-const { user } = require("pg/lib/defaults");
 
 /** Related functions for users. */
 

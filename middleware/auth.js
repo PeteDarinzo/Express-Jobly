@@ -4,7 +4,6 @@ const e = require("express");
 /** Convenience middleware to handle common auth cases in routes. */
 
 const jwt = require("jsonwebtoken");
-const { locals } = require("../app");
 const { SECRET_KEY } = require("../config");
 const { UnauthorizedError } = require("../expressError");
 
