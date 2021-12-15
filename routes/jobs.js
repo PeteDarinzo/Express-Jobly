@@ -28,7 +28,6 @@ const router = new express.Router();
  * 
  */
 
-
 router.post("/", ensureAdmin, async function (req, res, next) {
   try {
     const validator = jsonschema.validate(req.body, jobNewSchema);
