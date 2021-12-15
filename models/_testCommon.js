@@ -8,13 +8,12 @@ let jobIds = [];
 async function commonBeforeAll() {
 
   await db.query("DELETE FROM applications");
-  // noinspection SqlWithoutWhere
+
   await db.query("DELETE FROM companies");
-  // noinspection SqlWithoutWhere
+
   await db.query("DELETE FROM users");
 
   await db.query("DELETE FROM jobs");
-
 
 
   await db.query(`

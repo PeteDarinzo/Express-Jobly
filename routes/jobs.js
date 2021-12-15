@@ -5,9 +5,9 @@
 const jsonschema = require("jsonschema");
 const express = require("express");
 
-const { BadRequestError, ExpressError } = require("../expressError");
+const { BadRequestError } = require("../expressError");
 
-const { ensureLoggedIn, ensureAdmin } = require("../middleware/auth");
+const { ensureAdmin } = require("../middleware/auth");
 
 const jobNewSchema = require("../schemas/jobNew.json");
 const jobUpdateSchema = require("../schemas/jobUpdate.json");
@@ -28,6 +28,7 @@ const router = new express.Router();
  * 
  */
 
+
 router.post("/", ensureAdmin, async function (req, res, next) {
   try {
     const validator = jsonschema.validate(req.body, jobNewSchema);
@@ -41,6 +42,7 @@ router.post("/", ensureAdmin, async function (req, res, next) {
     next(err);
   }
 });
+
 
 /** GET /  =>
  *   { jobs: [ { title, salary, equity, companyHandle }, ...] }
@@ -56,6 +58,7 @@ router.get("/", async function (req, res, next) {
     next(err);
   }
 });
+
 
 /** GET /[title]  =>  { job }
  *
@@ -73,6 +76,7 @@ router.get("/:title", async function (req, res, next) {
     next(err);
   }
 });
+
 
 /** PATCH /[title] { fld1, fld2, ... } => { job }
  *
@@ -99,6 +103,7 @@ router.patch("/:title", ensureAdmin, async function (req, res, next) {
     next(err);
   }
 });
+
 
 /** DELETE /[title]  =>  { deleted: title }
  *

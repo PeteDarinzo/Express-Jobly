@@ -10,6 +10,7 @@ const jsToSql = {
 };
 
 
+/************************************** update */
 
 describe("sqlForPartialUpdate", function () {
     test("works", function () {
@@ -19,7 +20,7 @@ describe("sqlForPartialUpdate", function () {
     });
 });
 
-
+/************************************** filter companies */
 
 describe("sqlForCompanyFilters", function () {
     test("works minEmployees", function () {
@@ -65,7 +66,7 @@ describe("sqlForCompanyFilters", function () {
     });
 });
 
-
+/************************************** filter jobs */
 
 describe("sqlForJobFilters", function () {
     test("works minSalary", function () {

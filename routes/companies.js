@@ -5,8 +5,8 @@
 const jsonschema = require("jsonschema");
 const express = require("express");
 
-const { BadRequestError, ExpressError } = require("../expressError");
-const { ensureLoggedIn, ensureAdmin } = require("../middleware/auth");
+const { BadRequestError } = require("../expressError");
+const { ensureAdmin } = require("../middleware/auth");
 const Company = require("../models/company");
 
 const companyNewSchema = require("../schemas/companyNew.json");
@@ -39,6 +39,7 @@ router.post("/", ensureAdmin, async function (req, res, next) {
     next(err);
   }
 });
+
 
 /** GET /  =>
  *   { companies: [ { handle, name, description, numEmployees, logoUrl }, ...] }
@@ -73,6 +74,7 @@ router.get("/", async function (req, res, next) {
   }
 });
 
+
 /** GET /[handle]  =>  { company }
  *
  *  Company is { handle, name, description, numEmployees, logoUrl, jobs }
@@ -89,6 +91,7 @@ router.get("/:handle", async function (req, res, next) {
     next(err);
   }
 });
+
 
 /** PATCH /[handle] { fld1, fld2, ... } => { company }
  *
@@ -115,6 +118,7 @@ router.patch("/:handle", ensureAdmin, async function (req, res, next) {
     next(err);
   }
 });
+
 
 /** DELETE /[handle]  =>  { deleted: handle }
  *

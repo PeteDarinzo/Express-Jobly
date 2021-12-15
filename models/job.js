@@ -38,7 +38,6 @@ class Job {
 			]
 		);
 		const job = result.rows[0];
-
 		return job;
 	}
 
@@ -76,11 +75,8 @@ class Job {
 			FROM jobs
 			WHERE title = $1`,
 			[title]);
-
 		const job = jobRes.rows[0];
-
 		if (!job) throw new NotFoundError(`No job: ${title}`);
-
 		return job;
 	}
 
@@ -115,11 +111,8 @@ class Job {
 								company_handle AS "companyHandle"`;
 
 		const result = await db.query(querySql, [...values, title]);
-
 		const job = result.rows[0];
-
 		if (!job) throw new NotFoundError(`No job: ${title}`);
-
 		return job;
 	}
 
@@ -136,7 +129,6 @@ class Job {
 				RETURNING title`,
 			[title]);
 		const job = result.rows[0];
-
 		if (!job) throw new NotFoundError(`No job: ${title}`);
 	}
 }

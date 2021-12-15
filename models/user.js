@@ -90,9 +90,7 @@ class User {
         isAdmin,
       ],
     );
-
     const user = result.rows[0];
-
     return user;
   }
 
@@ -141,7 +139,6 @@ class User {
            FROM users
            ORDER BY username`,
     );
-
     return result.rows;
   }
 
@@ -166,13 +163,9 @@ class User {
           WHERE u.username = $1`,
       [username],
     );
-
     if (userRes.rows.length === 0) throw new NotFoundError(`No user: ${username}`);
-
     const { firstName, lastName, email, isAdmin } = userRes.rows[0];
-
     let jobs = userRes.rows.map(r => r.jobId);
-
     // convert a null array to an empty one
     if (jobs[0] === null) {
       jobs = [];
@@ -224,9 +217,7 @@ class User {
                                 is_admin AS "isAdmin"`;
     const result = await db.query(querySql, [...values, username]); // username is made the last thing
     const user = result.rows[0];
-
     if (!user) throw new NotFoundError(`No user: ${username}`);
-
     delete user.password;
     return user;
   }
@@ -242,7 +233,6 @@ class User {
       [username],
     );
     const user = result.rows[0];
-
     if (!user) throw new NotFoundError(`No user: ${username}`);
   }
 }

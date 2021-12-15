@@ -200,8 +200,6 @@ describe("POST /:username/jobs/:id", function () {
 
 });
 
-
-
 /************************************** GET /users */
 
 describe("GET /users", function () {
