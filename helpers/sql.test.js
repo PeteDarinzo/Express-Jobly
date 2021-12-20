@@ -50,19 +50,19 @@ describe("sqlForCompanyFilters", function () {
     test("works min, name", function () {
         let filters = { minEmployees: "5", name: "net" };
         let statement = sqlForCompanyFilters(filters);
-        expect(statement).toEqual(`WHERE LOWER(name) LIKE '%net%' AND num_employees >= 5`);
+        expect(statement).toEqual(`WHERE num_employees >= 5 AND LOWER(name) LIKE '%net%'`);
     });
 
     test("works max, name", function () {
         let filters = { maxEmployees: "10", name: "net" };
         let statement = sqlForCompanyFilters(filters);
-        expect(statement).toEqual(`WHERE LOWER(name) LIKE '%net%' AND num_employees <= 10`);
+        expect(statement).toEqual(`WHERE num_employees <= 10 AND LOWER(name) LIKE '%net%'`);
     });
 
     test("works min, max, name", function () {
         let filters = { minEmployees: "5", maxEmployees: "10", name: "net" };
         let statement = sqlForCompanyFilters(filters);
-        expect(statement).toEqual(`WHERE LOWER(name) LIKE '%net%' AND num_employees >= 5 AND num_employees <= 10`);
+        expect(statement).toEqual(`WHERE num_employees >= 5 AND num_employees <= 10 AND LOWER(name) LIKE '%net%'`);
     });
 });
 
@@ -96,18 +96,18 @@ describe("sqlForJobFilters", function () {
     test("works minSalary, title", function () {
         let filters = { minSalary: "50000", title: "programmer" };
         let statement = sqlForJobFilters(filters);
-        expect(statement).toEqual(`WHERE LOWER(title) LIKE '%programmer%' AND salary >= 50000`);
+        expect(statement).toEqual(`WHERE salary >= 50000 AND LOWER(title) LIKE '%programmer%'`);
     });
 
     test("works equity, name", function () {
         let filters = { hasEquity: true, title: "programmer" };
         let statement = sqlForJobFilters(filters);
-        expect(statement).toEqual(`WHERE LOWER(title) LIKE '%programmer%' AND equity > 0`);
+        expect(statement).toEqual(`WHERE equity > 0 AND LOWER(title) LIKE '%programmer%'`);
     });
 
     test("works minSalary, hasEquity, title", function () {
         let filters = { minSalary: "50000", hasEquity: true, title: "programmer" };
         let statement = sqlForJobFilters(filters);
-        expect(statement).toEqual(`WHERE LOWER(title) LIKE '%programmer%' AND salary >= 50000 AND equity > 0`);
+        expect(statement).toEqual(`WHERE salary >= 50000 AND equity > 0 AND LOWER(title) LIKE '%programmer%'`);
     });
 });

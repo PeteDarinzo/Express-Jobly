@@ -46,32 +46,22 @@ function sqlForCompanyFilters(filters) {
   let name = filters.name || "";
   name = name.toLowerCase();
 
+  let bits = [];
+
   if (minEmployees) {
-    outputStatement = `WHERE num_employees >= ${minEmployees}`;
+    bits.push(`num_employees >= ${minEmployees}`);
   }
 
   if (maxEmployees) {
-    outputStatement = `WHERE num_employees <= ${maxEmployees}`;
-  }
-
-  if (minEmployees && maxEmployees) {
-    outputStatement = `WHERE num_employees >= ${minEmployees} AND num_employees <= ${maxEmployees}`;
+    bits.push(`num_employees <= ${maxEmployees}`);
   }
 
   if (name) {
-    outputStatement = `WHERE LOWER(name) LIKE '%${name}%'`;
+    bits.push(`LOWER(name) LIKE '%${name}%'`);
   }
 
-  if (minEmployees && name) {
-    outputStatement = `WHERE LOWER(name) LIKE '%${name}%' AND num_employees >= ${minEmployees}`;
-  }
-
-  if (maxEmployees && name) {
-    outputStatement = `WHERE LOWER(name) LIKE '%${name}%' AND num_employees <= ${maxEmployees}`;
-  }
-
-  if (minEmployees && maxEmployees && name) {
-    outputStatement = `WHERE LOWER(name) LIKE '%${name}%' AND num_employees >= ${minEmployees} AND num_employees <= ${maxEmployees}`;
+  if (bits.length) {
+    outputStatement = "WHERE " + bits.join(' AND ');
   }
 
   return outputStatement;
@@ -92,32 +82,22 @@ function sqlForJobFilters(filters) {
   let title = filters.title || "";
   title = title.toLowerCase();
 
+  let bits = [];
+
   if (minSalary) {
-    outputStatement = `WHERE salary >= ${minSalary}`;
+    bits.push(`salary >= ${minSalary}`);
   }
 
   if (hasEquity) {
-    outputStatement = 'WHERE equity > 0';
-  }
-
-  if (minSalary && hasEquity) {
-    outputStatement = `WHERE salary >= ${minSalary} AND equity > 0`;
+    bits.push('equity > 0');
   }
 
   if (title) {
-    outputStatement = `WHERE LOWER(title) LIKE '%${title}%'`;
+    bits.push(`LOWER(title) LIKE '%${title}%'`);
   }
 
-  if (minSalary && title) {
-    outputStatement = `WHERE LOWER(title) LIKE '%${title}%' AND salary >= ${minSalary}`;
-  }
-
-  if (hasEquity && title) {
-    outputStatement = `WHERE LOWER(title) LIKE '%${title}%' AND equity > 0`;
-  }
-
-  if (minSalary && hasEquity && title) {
-    outputStatement = `WHERE LOWER(title) LIKE '%${title}%' AND salary >= ${minSalary} AND equity > 0`;
+  if (bits.length) {
+    outputStatement = "WHERE " + bits.join(' AND ');
   }
 
   return outputStatement;
